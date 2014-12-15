@@ -251,12 +251,41 @@ init:function(){
 		"window[xtype=fees.window] baseform #save":{
 			beforeclick:function(btn){
 				btn.callback=function(info){
-					
-				       
-					
+					var resutlCode= info.errorInfo.resultCode;
+					 if(300==resutlCode){
+						 btn.ownerCt.ownerCt.ownerCt.close();
+				    	 var window= Ext.createWidget("window",{
+				           	  title:"并联收费标准",
+				           	  width:300,
+				           	  height:100,
+				           	  items:[{xtype:"fees.feesitemform"}]
+				           	 });
+				           	 window.show();
+					 }
 				}
 			 }
-			}
+			},
+	         /**
+	          * 加载combox数据
+	          */
+	         "form[xtype=fees.feesitemform] #feeeItemCombobox":{
+	         	  render:function(combo) {
+	         	  	var from= combo.ownerCt.ownerCt.ownerCt;
+	         	  //	var tag=from.tag;
+	         	    var ddCode ={
+                          whereSql:' and tf_Village=1'//+tag.vid
+                       }
+                 Ext.apply(combo.ddCode,ddCode);
+                 var store=combo.store;
+                 var proxy=store.getProxy();
+				  proxy.extraParams=combo.ddCode;
+			      store.load();	
+				   
+	         	  	
+	         	  }
+	         	
+	         },
+			
 		});
 	},
 	views:[
@@ -264,7 +293,8 @@ init:function(){
 	'core.prop.fees.view.LevelTree',
 	"core.prop.fees.view.FeesGrid",
 	"core.prop.fees.view.FeeWinodw",
-	"core.prop.fees.view.SettingForm"
+	"core.prop.fees.view.SettingForm",
+	"core.prop.fees.view.SettingFeesItemForm"
 	],
 	stores:[
 	'core.prop.fees.store.LevelStore',
